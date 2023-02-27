@@ -16,11 +16,15 @@ use std::io::{Write, Read};
 // For Bulk Strings, the first byte of the reply is "$"
 // For Arrays, the first byte of the reply is "*"
 
-fn handle_client(mut stream: std::net::TcpStream) {
+fn handle_client(mut stream: std::net::TcpStream) -> std::io::Result<()> {
     let mut buf = [0; 512];
 
     loop {
-        let bytes_read = stream.read(&mut buf).unwrap();
+        let bytes_read = match stream.read(&mut buf) {
+            Ok(bytes) => bytes,
+            Err(e) => return Err(e)
+        };
+
         if bytes_read == 0 {
             println!("Client closed connection?");
             break;
@@ -28,6 +32,7 @@ fn handle_client(mut stream: std::net::TcpStream) {
 
         stream.write(b"+PONG\r\n").unwrap();
     }
+    Ok(())
 
 }
 
