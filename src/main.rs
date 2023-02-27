@@ -30,7 +30,7 @@ fn handle_client(mut stream: std::net::TcpStream) -> std::io::Result<()> {
             break;
         } 
 
-        stream.write(b"+PONG\r\n").unwrap();
+        stream.write(b"+PONG\r\n")?;
     }
     Ok(())
 
@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                handle_client(stream);   
+                handle_client(stream)?;   
             }
             Err(e) => {
                 println!("error: {}", e);
